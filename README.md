@@ -34,7 +34,7 @@ A simple library to add a key-value pair based configuration manager to any .NET
 | `void SetAllValues(Dictionary<string, string> values)` | Overwrite the entire value set | `values`: New value set ||
 | `void Save()` | Save the current value set |||
 
-> All the methods are static, no `Config` instance needs to be created
+> All the methods are static, no `Config` instance needs to be created.
 
 ## Safety functions
 
