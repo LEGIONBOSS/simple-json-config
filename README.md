@@ -20,6 +20,16 @@ A simple library to add a key-value pair based configuration manager to any .NET
 
 > For a code example, see [ConfigExample/Program.cs](ConfigExample/Program.cs)
 
+The above code example will create `test_config.json` in the user documents folder with the following content:
+
+```json
+{
+  "name": "John Doe",
+  "age": "30",
+  "number": "123"
+}
+```
+
 ## Public methods
 
 | Method | Description | Parameters | Returns |
