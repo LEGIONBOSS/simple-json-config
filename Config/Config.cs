@@ -47,7 +47,7 @@ namespace Config
         {
             if (_filePathSet)
             {
-                throw new InvalidOperationException("The file path has already been set.");
+                throw new Exception("The file path has already been set.");
             }
         }
 
@@ -55,7 +55,7 @@ namespace Config
         {
             if (!_filePathSet)
             {
-                throw new InvalidOperationException("The file path has not been set.");
+                throw new Exception("The file path has not been set. Set it with FilePath first.");
             }
         }
 
@@ -67,7 +67,7 @@ namespace Config
             EnsureFilePathSet();
             if (_unsaved)
             {
-                throw new Exception("Error loading config file.", new Exception("There are unsaved changes that would be lost. Call Save() first."));
+                throw new Exception("There are unsaved changes that would be lost. Call Save() first.");
             }
             if (System.IO.File.Exists(_filePath))
             {
