@@ -25,8 +25,8 @@ The above code example will create `test_config.json` in the user documents fold
 ```json
 {
   "name": "John Doe",
-  "age": "30",
-  "number": "123"
+  "ip_address": "127.0.0.1",
+  "port": "1234"
 }
 ```
 
