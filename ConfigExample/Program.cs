@@ -17,15 +17,17 @@ namespace ConfigExample
             // Set the file path
             Config.Config.FilePath = FilePath;
 
-            // Load the values
+            // Load the file
             Config.Config.Load();
 
-            // Set some values
-            string name = "John Doe";
-            IPAddress ip = new IPAddress(new byte[] { 127, 0, 0, 1 });
-            int port = 1234;
+            // Load / create some values
+            string name = Config.Config.GetValue("name", "John Doe");
             Config.Config.SetValue("name", name);
+            
+            IPAddress ip = IPAddress.Parse(Config.Config.GetValue("ip_address", "127.0.0.1"));
             Config.Config.SetValue("ip_address", ip.ToString());
+            
+            int port = int.Parse(Config.Config.GetValue("port", "1234"));
             Config.Config.SetValue("port", port.ToString());
 
             // List the current values
