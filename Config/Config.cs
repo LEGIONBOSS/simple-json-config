@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text.Json;
-using System.Text.Json.Serialization;
 
-namespace Config
+namespace ConfigLib
 {
-    public class Config
+    public static class Config
     {
         private static bool _loaded = false;
 
@@ -69,11 +69,11 @@ namespace Config
             {
                 throw new Exception("There are unsaved changes that would be lost. Call Save() first.");
             }
-            if (System.IO.File.Exists(_filePath))
+            if (File.Exists(_filePath))
             {
                 try
                 {
-                    string json = System.IO.File.ReadAllText(_filePath);
+                    string json = File.ReadAllText(_filePath);
                     _config = JsonSerializer.Deserialize<Dictionary<string, string>>(json);
                 }
                 catch (Exception ex)
@@ -181,7 +181,7 @@ namespace Config
             try
             {
                 string json = JsonSerializer.Serialize(_config, new JsonSerializerOptions { WriteIndented = true });
-                System.IO.File.WriteAllText(_filePath, json);
+                File.WriteAllText(_filePath, json);
                 _unsaved = false;
             }
             catch (Exception ex)
