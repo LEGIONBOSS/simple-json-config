@@ -59,3 +59,22 @@ The above code example will create `test_config.json` in the user documents fold
 - The `GetValue` method with the `defaultValue` parameter is to provide a failsafe value retrieval.
 - A call to `GetAllValues` will return a copy of the underlying `Dictionary` to protect it's values in the absence of a call to `SetAllValues`.
 - If any exception is thrown during the `Save` method, an exception will be thrown with the message `Error saving config file.` and the original exception as the `innerException`.
+
+**Method call order rules:**
+
+```mermaid
+flowchart LR
+	A[FilePath] --> B[Load]
+	B --> C[KeyExists]
+	B --> D[GetValue]
+	B --> E[GetAllValues]
+	B --> F[SetValue]
+	B --> G[SetAllValues]
+    B --> H[Save]
+	C --> H
+	D --> H
+	E --> H
+	F --> H
+	G --> H
+	H --> B
+```
