@@ -12,9 +12,10 @@ A simple library to add a key-value pair based configuration manager to any .NET
 
 1. Add `Config.dll` or `Config.cs` to your project
 2. Set the file path where the JSON file will be saved and loaded from with `Config.FilePath`
-3. Get values from existing keys with `Config.GetValue()`
-4. Set values for new or existing keys with `Config.SetValue()`
-5. Save your keys and values for the next session with `Config.Save()`
+3. Load (or create a new) key and value set with `Config.Load()`
+4. Get values from existing keys with `Config.GetValue()`
+5. Set values for new or existing keys with `Config.SetValue()`
+6. Save your keys and values for the next session with `Config.Save()`
 
 > Values are stored as a `string`. An appropriate parsing procedure must be used to convert it to and from other types.
 
