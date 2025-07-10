@@ -1,7 +1,4 @@
 ﻿using ConfigLib;
-using System;
-using System.Collections.Generic;
-using System.IO;
 using System.Net;
 
 namespace ConfigExample
@@ -24,10 +21,10 @@ namespace ConfigExample
             // Load / create some values
             string name = Config.GetValue("name", "John Doe");
             Config.SetValue("name", name);
-            
+
             IPAddress ip = IPAddress.Parse(Config.GetValue("ip_address", "127.0.0.1"));
             Config.SetValue("ip_address", ip.ToString());
-            
+
             int port = int.Parse(Config.GetValue("port", "1234"));
             Config.SetValue("port", port.ToString());
 
