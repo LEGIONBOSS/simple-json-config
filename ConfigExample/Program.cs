@@ -12,11 +12,8 @@ namespace ConfigExample
             // Start with a clean slate
             Clean();
 
-            // Set the file path
-            Config.FilePath = FilePath;
-
-            // Load the file
-            Config.Load();
+            // Create a new value set
+            Config.Set(FilePath);
 
             // Load / create some values
             string name = Config.GetValue("name", "John Doe");
@@ -31,7 +28,7 @@ namespace ConfigExample
             // List the current values
             List();
 
-            // Save the values
+            // Save the values into the file
             Config.Save();
         }
 

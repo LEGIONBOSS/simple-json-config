@@ -7,81 +7,73 @@ namespace ConfigLib
 {
     public static class Config
     {
-        private static bool _loaded = false;
-
-        private static bool _filePathSet = false;
-
+        private static bool _set = false;
         private static bool _unsaved = false;
 
         private static string _filePath = "config.json";
-
         private static Dictionary<string, string> _config = new Dictionary<string, string>();
+
+        private static string _setExMsg = "No current value set is set. Call Set() before making changes.";
+        private static string _savedExMsg = "There are unsaved changes that would be lost. Call Save() first.";
+
+        private static void EnsureSet()
+        {
+            if (!_set)
+            {
+                throw new Exception(_setExMsg);
+            }
+        }
+
+        private static void EnsureSaved()
+        {
+            if (_unsaved)
+            {
+                throw new Exception(_savedExMsg);
+            }
+        }
 
         /// <summary>
         /// The file path of the value set
         /// </summary>
-        public static string FilePath
-        {
-            get => _filePath;
-            set
-            {
-                EnsureFilePathNotSet();
-                if (!value.EndsWith(".json", StringComparison.OrdinalIgnoreCase))
-                {
-                    value += ".json";
-                }
-                _filePath = value;
-                _filePathSet = true;
-            }
-        }
+        public static string FilePath => _filePath;
 
-        private static void EnsureLoaded()
+        /// <summary>
+        /// Check if a value set file exists
+        /// </summary>
+        /// <param name="filePath">Value set file path</param>
+        /// <returns>True, if the value set file exists</returns>
+        public static bool ConfigExists(string filePath)
         {
-            if (!_loaded)
-            {
-                Load();
-            }
-        }
-
-        private static void EnsureFilePathNotSet()
-        {
-            if (_filePathSet)
-            {
-                throw new Exception("The file path has already been set.");
-            }
-        }
-
-        private static void EnsureFilePathSet()
-        {
-            if (!_filePathSet)
-            {
-                throw new Exception("The file path has not been set. Set it with FilePath first.");
-            }
+            return File.Exists(filePath);
         }
 
         /// <summary>
-        /// Load the value set from the set file path
+        /// Set a new or existing value set to use
         /// </summary>
-        public static void Load()
+        /// <param name="filePath">Value set file path</param>
+        /// <exception cref="Exception">asd</exception>
+        public static void Set(string filePath)
         {
-            EnsureFilePathSet();
-            if (_unsaved)
+            EnsureSaved();
+
+            if (ConfigExists(filePath))
             {
-                throw new Exception("There are unsaved changes that would be lost. Call Save() first.");
-            }
-            if (File.Exists(_filePath))
-            {
+                // Existing
                 try
                 {
-                    string json = File.ReadAllText(_filePath);
+                    string json = File.ReadAllText(filePath);
                     _config = JsonSerializer.Deserialize<Dictionary<string, string>>(json);
                 }
                 catch (Exception ex)
                 {
-                    throw new Exception("Error loading config file.", ex);
+                    throw new Exception($"Error loading config file {filePath}.", ex);
                 }
             }
-            _loaded = true;
+
+            // Existing or new
+            _filePath = filePath;
+            _set = true;
+            _unsaved = false;
         }
 
         /// <summary>
@@ -91,8 +83,8 @@ namespace ConfigLib
         /// <returns>True, if the key exists</returns>
         public static bool KeyExists(string key)
         {
-            EnsureFilePathSet();
-            EnsureLoaded();
+            EnsureSet();
+
             return _config.ContainsKey(key);
         }
 
@@ -103,9 +95,9 @@ namespace ConfigLib
         /// <returns>Current value for the key or null</returns>
         public static string GetValue(string key)
         {
-            EnsureFilePathSet();
-            EnsureLoaded();
-            if (_config.ContainsKey(key))
+            EnsureSet();
+
+            if (KeyExists(key))
             {
                 return _config[key];
             }
@@ -123,9 +115,9 @@ namespace ConfigLib
         /// <returns>Current value for the key or defaultValue</returns>
         public static string GetValue(string key, string defaultValue)
         {
-            EnsureFilePathSet();
-            EnsureLoaded();
-            if (_config.ContainsKey(key))
+            EnsureSet();
+
+            if (KeyExists(key))
             {
                 return _config[key];
             }
@@ -141,8 +133,8 @@ namespace ConfigLib
         /// <returns>Current value set</returns>
         public static Dictionary<string, string> GetAllValues()
         {
-            EnsureFilePathSet();
-            EnsureLoaded();
+            EnsureSet();
+
             return new Dictionary<string, string>(_config);
         }
 
@@ -153,8 +145,8 @@ namespace ConfigLib
         /// <param name="value">New value</param>
         public static void SetValue(string key, string value)
         {
-            EnsureFilePathSet();
-            EnsureLoaded();
+            EnsureSet();
+
             _config[key] = value;
             _unsaved = true;
         }
@@ -165,8 +157,8 @@ namespace ConfigLib
         /// <param name="values">New value set</param>
         public static void SetAllValues(Dictionary<string, string> values)
         {
-            EnsureFilePathSet();
-            EnsureLoaded();
+            EnsureSet();
+
             _config = new Dictionary<string, string>(values);
             _unsaved = true;
         }
@@ -176,8 +168,8 @@ namespace ConfigLib
         /// </summary>
         public static void Save()
         {
-            EnsureFilePathSet();
-            EnsureLoaded();
+            EnsureSet();
+
             try
             {
                 string json = JsonSerializer.Serialize(_config, new JsonSerializerOptions { WriteIndented = true });
@@ -186,7 +178,7 @@ namespace ConfigLib
             }
             catch (Exception ex)
             {
-                throw new Exception("Error saving config file.", ex);
+                throw new Exception($"Error saving config file {_filePath}.", ex);
             }
         }
     }
